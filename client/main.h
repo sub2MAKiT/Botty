@@ -6,5 +6,8 @@
 
 extern GLFWwindow* window;
 extern unsigned int GLBufferID;
+extern unsigned int GLArrayID;
+extern unsigned int GLIndiceID;
+extern unsigned int shaderProgram;
 
-extern float vertices[9];
+extern float vertices[12];
