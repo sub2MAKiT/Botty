@@ -1,0 +1,6 @@
+{
+    "files.associations": {
+        "init.h": "c",
+        "glfw3.h": "c"
+    }
+}
