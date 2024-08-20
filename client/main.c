@@ -12,16 +12,17 @@ int main(void) {
 
     while (!glfwWindowShouldClose(window)) {
 
+        // printf("%f\n",glfwGetTime());
+
         getInput();
 
         glClear(GL_COLOR_BUFFER_BIT);
 
-        glUseProgram(shaderProgram[0]);
-        glBindVertexArray(GLArrayID[0]);
-        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, GLIndiceID[0]);
+        glUseProgram(GL_shaderProgram[SHADER_IMAGE]);
+        glBindVertexArray(GL_ArrayID[SHADER_IMAGE]);
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, GL_IndiceID[SHADER_IMAGE]);
+        glBindTexture(GL_TEXTURE_2D, GL_texture[0]);
         glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
-        glDrawArrays(GL_TRIANGLES, 0, 3);
-
         glfwSwapBuffers(window);
 
         glfwPollEvents();
@@ -30,7 +31,9 @@ int main(void) {
     DEBUG("Draw loop terminated");
 
     glfwTerminate();
+    DEBUG("GLFW terminated");
 
     Cleanup();
+    DEBUG("Cleaned up");
     return 0;
 }

@@ -2,6 +2,8 @@
     "files.associations": {
         "init.h": "c",
         "glfw3.h": "c",
-        "mktutil.h": "c"
+        "mktutil.h": "c",
+        "algorithm": "c",
+        "xutility": "c"
     }
 }
