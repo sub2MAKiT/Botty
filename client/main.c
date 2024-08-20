@@ -2,6 +2,7 @@
 #include "init.h"
 #include "MKTUtil.h"
 #include "input.h"
+#include "cleanup.h"
 
 int main(void) {
 
@@ -15,9 +16,9 @@ int main(void) {
 
         glClear(GL_COLOR_BUFFER_BIT);
 
-        glUseProgram(shaderProgram);
-        glBindVertexArray(GLArrayID);
-        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, GLIndiceID);
+        glUseProgram(shaderProgram[0]);
+        glBindVertexArray(GLArrayID[0]);
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, GLIndiceID[0]);
         glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
         glDrawArrays(GL_TRIANGLES, 0, 3);
 
@@ -29,5 +30,7 @@ int main(void) {
     DEBUG("Draw loop terminated");
 
     glfwTerminate();
+
+    Cleanup();
     return 0;
 }

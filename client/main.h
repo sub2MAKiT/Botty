@@ -5,9 +5,11 @@
 #include <GLFW/glfw3.h>
 
 extern GLFWwindow* window;
-extern unsigned int GLBufferID;
-extern unsigned int GLArrayID;
-extern unsigned int GLIndiceID;
-extern unsigned int shaderProgram;
+extern unsigned int * GLBufferID;
+extern unsigned int * GLArrayID;
+extern unsigned int * GLIndiceID;
+extern unsigned int * shaderProgram;
+
+extern unsigned long long int GLShaderSize;
 
 extern float vertices[12];
