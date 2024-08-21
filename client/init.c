@@ -6,11 +6,13 @@
 #define STB_IMAGE_IMPLEMENTATION
 #include "./external/stb_image.h"
 
+texture * MKT_VisualObject;
+
 float vertices[] = {
-     0.5f,  0.5f, 0.0f,   1.0f, 1.0f, 1.0f,   1.0f, 0.0f,   // top right
-     0.5f, -0.5f, 0.0f,   1.0f, 1.0f, 1.0f,   1.0f, 1.0f,   // bottom right
-    -0.5f, -0.5f, 0.0f,   1.0f, 1.0f, 1.0f,   0.0f, 1.0f,   // bottom left
-    -0.5f,  0.5f, 0.0f,   1.0f, 1.0f, 1.0f,   0.0f, 0.0f    // top left 
+     0.5f,  0.5f, 0.0f,   1.0f, 0.0f,   // top right
+     0.5f, -0.5f, 0.0f,   1.0f, 1.0f,   // bottom right
+    -0.5f, -0.5f, 0.0f,   0.0f, 1.0f,   // bottom left
+    -0.5f,  0.5f, 0.0f,   0.0f, 0.0f    // top left 
 };
 unsigned int indices[] = {  // note that we start from 0!
     0, 1, 3,   // first triangle
@@ -25,10 +27,8 @@ unsigned int * GL_ArrayID;
 unsigned int * GL_IndiceID;
 unsigned int * GL_shaderProgram;
 
-unsigned int * GL_texture;
-
 unsigned long long int GL_ShaderSize = 0;
-unsigned long long int GL_TextureSize = 0;
+unsigned long long int MKT_VisualObjectSize = 0;
 int init() { // innit it an int init?
     glfwInit();
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
@@ -61,15 +61,19 @@ int init() { // innit it an int init?
     GL_ArrayID = malloc(1);
     GL_IndiceID = malloc(1);
     GL_shaderProgram = malloc(1);
-    GL_texture = malloc(1);
+    MKT_VisualObject = malloc(1);
 
 
-    GL_createShader(SC_TestVS,SC_TestFS,vertices,indices,32,6);
-    GL_createShader(SC_ImageVS,SC_ImageFS,vertices,indices,32,6);
-    GL_createImage();
+    GL_createShader(SC_TestVS,SC_TestFS,vertices,indices,20,6);
+    GL_createShader(SC_ImageVS,SC_ImageFS,vertices,indices,20,6);
+    GL_createImage("./testSource/Pie.png");
+    GL_createImage("./testSource/MAKiT.png");
     glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
 
     glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
+
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
     return 0;
 }
@@ -122,67 +126,38 @@ int GL_createShader(const char * int_vertexShaderSource, const char *int_fragmen
     glBindBuffer(GL_ARRAY_BUFFER, GL_BufferID[GL_ShaderSize-1]);
     glBufferData(GL_ARRAY_BUFFER, sizeof(float)*sizeOfVertices, vertices, GL_STATIC_DRAW);
 
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)0);
-    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(3 * sizeof(float)));
-    glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(6 * sizeof(float)));
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)0);
+    glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)));
     glEnableVertexAttribArray(0);
     glEnableVertexAttribArray(1);
-    glEnableVertexAttribArray(2);
 
     return 0;
 }
 
 
-int GL_createImage()
+int GL_createImage(const char * file)
 {
     
-    GL_TextureSize++;
-    GL_texture = realloc(GL_texture,GL_TextureSize*sizeof(unsigned int));
-    glGenTextures(1, &GL_texture[GL_TextureSize-1]);
-    glBindTexture(GL_TEXTURE_2D, GL_texture[GL_TextureSize-1]);
-    // set the texture wrapping/filtering options (on the currently bound texture object)
+    MKT_VisualObjectSize++;
+    MKT_VisualObject = realloc(MKT_VisualObject,MKT_VisualObjectSize*sizeof(texture));
+    for(int i = 0; i < 16; i++)
+        MKT_VisualObject[MKT_VisualObjectSize-1].transform[i] = (i==0|i==5|i==10|i==15 ? 1.0 : 0.0);
+    for(int i = 0; i < 4; i++)
+        MKT_VisualObject[MKT_VisualObjectSize-1].colour[i] = 1.0;
+        
+    printf("\n");
+    glGenTextures(1, &MKT_VisualObject[MKT_VisualObjectSize-1].texture);
+    glBindTexture(GL_TEXTURE_2D, MKT_VisualObject[MKT_VisualObjectSize-1].texture);
+
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);	
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-    // load and generate the texture
+
     int width, height, nrChannels;
-    unsigned char *data = stbi_load("./testSource/MAKiT.png", &width, &height, &nrChannels, 0); 
+    unsigned char *data = stbi_load(file, &width, &height, &nrChannels, 0); 
 
-    printf("%s",data);
-
-    // data[0] = 1.0;
-    // data[1] = 0.0;
-    // data[2] = 0.0;
-    // data[3] = 0.0;
-    // data[4] = 0.0;
-    // data[5] = 1.0;
-    // data[6] = 0.6;
-    // data[7] = 0.6;
-    // data[8] = 0.0;
-    // data[9] = 0.0;
-    // data[10] = 1.0;
-    // data[11] = 0.0;
-
-    // data[0] = 0;
-    // data[1] = 0;
-    // data[2] = 0;
-    // data[3] = 0;
-    // data[4] = 0;
-    // data[5] = 0;
-    // data[6] = 0;
-    // data[7] = 0;
-    // data[8] = 0;
-    // data[9] = 0;
-    // data[10] = 0;
-    // data[11] = 0;
-    
-    //[1.0f,0.0f,0.0f,
-      //              0.0f,0.0f,1.0f,
-        //            0.6f,0.6f,0.0f,
-          //          0.0f,1.0f,0.0f];
-
-
+    // printf("%d\n",nrChannels);
 
     if (data)
     {
@@ -190,7 +165,7 @@ int GL_createImage()
         glGenerateMipmap(GL_TEXTURE_2D);
     }
 
-    // stbi_image_free(data);
+    stbi_image_free(data);
 
     return 0;
 }

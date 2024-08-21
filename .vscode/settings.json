@@ -4,6 +4,8 @@
         "glfw3.h": "c",
         "mktutil.h": "c",
         "algorithm": "c",
-        "xutility": "c"
+        "xutility": "c",
+        "main.h": "c",
+        "stb_image.h": "c"
     }
 }

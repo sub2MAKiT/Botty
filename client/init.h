@@ -5,10 +5,11 @@
 
 
 
+
 int init();
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 
 int GL_createShader(const char * int_vertexShaderSource, const char *int_fragmentShaderSource, float * vertices,unsigned int * indices, unsigned int sizeOfVertices, unsigned int sizeOfIndices);
 
-int GL_createImage();
+int GL_createImage(const char * file);

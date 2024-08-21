@@ -7,7 +7,7 @@ int Cleanup(){
     free(GL_ArrayID);
     free(GL_IndiceID);
     free(GL_shaderProgram);
-    free(GL_texture);
+    free(MKT_VisualObject);
 
     return 0;
 }
