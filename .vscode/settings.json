@@ -6,6 +6,9 @@
         "algorithm": "c",
         "xutility": "c",
         "main.h": "c",
-        "stb_image.h": "c"
+        "stb_image.h": "c",
+        "glad.h": "c",
+        "stdlib.h": "c",
+        "freetype.h": "c"
     }
 }

@@ -7,6 +7,7 @@
                 "C:/sdk/glfw-3.3.6\\include\\**",
                 "C:/sdk/glad/include/KHR/**",
                 "C:/sdk/glad/include/glad/**",
+                "C:\\sdk\\freetype-windows-binaries\\include\\**",
                 "C:/sdk/glad/include/**"
             ],
             "defines": [
