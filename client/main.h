@@ -4,7 +4,7 @@
 
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
-
+#include <cglm/cglm.h>
 
 extern GLFWwindow* window;
 extern unsigned int * GL_BufferID;
@@ -18,24 +18,37 @@ float transform[16];// = {1.0,0.0,0.0,0.0,0.0,1.0,0.0,0.0,0.0,0.0,0.0,1.0,0.0,0.
 float colour[4];// = {1.0,1.0,1.0,1.0};
 }texture;
 
-typedef struct textTureStruct {
-unsigned int texture;
-float transform[16];// = {1.0,0.0,0.0,0.0,0.0,1.0,0.0,0.0,0.0,0.0,0.0,1.0,0.0,0.0,0.0,1.0};
-float colour[4];// = {1.0,1.0,1.0,1.0};
+typedef struct textStruct {
 char * text;
 unsigned int sizeOfText;
-}textTure; // get it? Cause like... text...Ture... it's a texture for text... textture... I'm funny
+unsigned int font;
+float transform[16];
+float colour[4];
+}text;  // textTure; // get it? Cause like... text...Ture... it's a texture for text... textture... I'm funny
+
+typedef struct terminalStruct {
+text line;
+text log;
+} terminal;
+
+typedef struct selectedObjectStruct {
+long long int type;
+long long int index;
+text * text;
+} selectedObject;
 
 extern texture * MKT_VisualObject;
-extern textTure * MKT_FontObject;
+extern texture * MKT_FontObject;
+extern text * MKT_textObject;
 
 extern unsigned long long int GL_ShaderSize;
 extern unsigned long long int MKT_VisualObjectSize;
 extern unsigned long long int MKT_FontObjectSize;
+extern unsigned long long int MKT_textObjectSize;
 
 extern char buttonPressed;
 
-extern long long int MKT_selectedFontObject;
+extern selectedObject MKT_selectedTextObject;
 
 
 #define SHADER_TEST 0

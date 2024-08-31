@@ -1,15 +1,20 @@
 #include "main.h"
 #include "init.h"
-#include "render.h"
 #include "MKTUtil.h"
 #include "input.h"
 #include "cleanup.h"
+#include "transform.h"
 
 unsigned int temp = 0;
 
 char buttonPressed = 0;
 
+selectedObject MKT_selectedTextObject;
+
 int main(void) {
+
+
+
 
     init();
 
@@ -19,8 +24,9 @@ int main(void) {
 
     while (!glfwWindowShouldClose(window)) {
 
-        MKT_selectedFontObject = 0;
-
+        MKT_selectedTextObject.index = 0;
+        MKT_selectedTextObject.type = 0;
+        MKT_selectedTextObject.text = MKT_textObject;
         // printf("%f\n",glfwGetTime());
 
         temp = glfwGetTime();
@@ -56,9 +62,14 @@ int main(void) {
         // glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
         // Fonts
 
-        for(int i = 0; i < MKT_FontObjectSize; i++)
-            for(int character = 0; character < MKT_FontObject[i].sizeOfText; character++)
+        
+
+        for(int i = 0; i < MKT_textObjectSize; i++) {
+            unsigned int newline = 0;
+            unsigned int offset = 0;
+            for(int character = 0; character < MKT_textObject[i].sizeOfText; character++)
             {
+                offset++;
                 glUseProgram(GL_shaderProgram[SHADER_FONTS]);
                 glBindVertexArray(GL_ArrayID[SHADER_FONTS]);
                 glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, GL_IndiceID[SHADER_FONTS]);
@@ -70,12 +81,21 @@ int main(void) {
                 unsigned int transformLocFont = glGetUniformLocation(GL_shaderProgram[SHADER_FONTS], "transform");
                 unsigned int letterLocFont = glGetUniformLocation(GL_shaderProgram[SHADER_FONTS], "letter");
                 unsigned int offsetLocFont = glGetUniformLocation(GL_shaderProgram[SHADER_FONTS], "offset");
-                glUniform4fv(colorLocFont, 1, MKT_FontObject[i].colour);
-                glUniformMatrix4fv(transformLocFont, 1, GL_FALSE, MKT_FontObject[i].transform);
-                glUniform1i(letterLocFont, MKT_FontObject[i].text[character]);
-                glUniform1i(offsetLocFont, character);
+                unsigned int newLineLocFont = glGetUniformLocation(GL_shaderProgram[SHADER_FONTS], "newline");
+                glUniform4fv(colorLocFont, 1, MKT_textObject[i].colour);
+                glUniformMatrix4fv(transformLocFont, 1, GL_FALSE, MKT_textObject[i].transform);
+                if(MKT_textObject[i].text[character] == 100) {
+                    glUniform1i(letterLocFont, -1);
+                    newline++;
+                    offset = 0;
+                } else
+                    glUniform1i(letterLocFont, MKT_textObject[i].text[character]);
+
+                glUniform1i(offsetLocFont, offset);
+                glUniform1i(newLineLocFont, newline);
                 glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
             }
+        }
         glfwSwapBuffers(window);
 
         glfwPollEvents();

@@ -14,3 +14,4 @@ int GL_createShader(const char * int_vertexShaderSource, const char *int_fragmen
 
 int GL_createImage(const char * file);
 int GL_createFont(const char * file);
+int MKT_createText(unsigned int font);

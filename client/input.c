@@ -2,10 +2,10 @@
 #include "main.h"
 #include "MKTUtil.h"
 #include "input.h"
+#include "transform.h"
 
 input MKT_input;
 
-long long int MKT_selectedFontObject = 0;
 
 void getInput(){
     for(int i = 0; i < 34; i++)
@@ -39,10 +39,11 @@ void getInput(){
 
 
 
-}// 
+}
 
 void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods)
 {
+
     if(action == GLFW_RELEASE && key != GLFW_KEY_LEFT_SHIFT)
         buttonPressed = 0;
 
@@ -50,15 +51,22 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
         return;
     buttonPressed = 1;
 
-    MKT_FontObject[MKT_selectedFontObject].sizeOfText++;
+    MKT_selectedTextObject.text->sizeOfText++;
 
-    if(!(MKT_FontObject[MKT_selectedFontObject].sizeOfText%100))
-        MKT_FontObject[MKT_selectedFontObject].text = realloc(MKT_FontObject[MKT_selectedFontObject].text,MKT_FontObject[MKT_selectedFontObject].sizeOfText);
+    if(!(MKT_selectedTextObject.text->sizeOfText%100))
+        MKT_selectedTextObject.text->text = realloc(MKT_selectedTextObject.text->text,MKT_selectedTextObject.text->sizeOfText);
 
-    MKT_FontObject[MKT_selectedFontObject].text[MKT_FontObject[MKT_selectedFontObject].sizeOfText-1];
+    MKT_selectedTextObject.text->text[MKT_selectedTextObject.text->sizeOfText-1];
 
-    char * characterToChange = &MKT_FontObject[MKT_selectedFontObject].text[MKT_FontObject[MKT_selectedFontObject].sizeOfText-1];
+    char * characterToChange = &MKT_selectedTextObject.text->text[MKT_selectedTextObject.text->sizeOfText-1];
     
+    //*(char**)(MKT_textObject+sizeof(text)*MKT_selectedTextObject)-(MKT_textObject||MKT_textObject)+(((text*)(MKT_textObject+16*MKT_selectedTextObject)))->sizeOfText;
+
+    // for(int i = 0; i < sizeof(text);i++)
+    //     printf("%d.%d\n",i,*(int*)(((text*)(MKT_textObject+sizeof(text)*MKT_selectedTextObject))+i));
+
+    // printf("\n\n");
+
     if (key == GLFW_KEY_1 && (mods&GLFW_MOD_SHIFT)) {*characterToChange = 0;return;}
     if (key == GLFW_KEY_APOSTROPHE && (mods&GLFW_MOD_SHIFT)) {*characterToChange = 1;return;}
     
@@ -88,6 +96,10 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
     if (key == GLFW_KEY_X && mods&GLFW_MOD_SHIFT) {*characterToChange = 55;return;}
     if (key == GLFW_KEY_Y && mods&GLFW_MOD_SHIFT) {*characterToChange = 56;return;}
     if (key == GLFW_KEY_Z && mods&GLFW_MOD_SHIFT) {*characterToChange = 57;return;}
+
+    if (key == GLFW_KEY_BACKSPACE) { if(MKT_selectedTextObject.text->sizeOfText>1)MKT_selectedTextObject.text->sizeOfText -=2;return;}
+    
+    if (key == GLFW_KEY_SPACE) *characterToChange = -1;
 
     if (key == GLFW_KEY_APOSTROPHE) *characterToChange = 6;
     if (key == GLFW_KEY_1) *characterToChange = 16;
@@ -127,4 +139,14 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
     if (key == GLFW_KEY_Y)*characterToChange = 56+32;
     if (key == GLFW_KEY_Z)*characterToChange = 57+32;
 
+    if (key == GLFW_KEY_ENTER)*characterToChange = 100;
+
+
+    if (key == GLFW_KEY_RIGHT) MKT_selectedTextObject.text->sizeOfText--;
+    if (key == GLFW_KEY_LEFT) MKT_selectedTextObject.text->sizeOfText--;
+    if (key == GLFW_KEY_UP) MKT_selectedTextObject.text->sizeOfText--;
+    if (key == GLFW_KEY_DOWN) MKT_selectedTextObject.text->sizeOfText--;
+    if (key == GLFW_KEY_LEFT_SHIFT) MKT_selectedTextObject.text->sizeOfText--;
+
+    return;
 }

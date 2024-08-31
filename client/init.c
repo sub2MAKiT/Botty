@@ -9,7 +9,9 @@
 #include "./external/stb_image.h"
 
 texture * MKT_VisualObject;
-textTure * MKT_FontObject;
+texture * MKT_FontObject;
+
+text * MKT_textObject;
 
 float vertices[] = {
      0.5f,  0.5f, 0.0f,   1.0f, 0.0f,   // top right
@@ -41,6 +43,7 @@ unsigned int * GL_shaderProgram;
 unsigned long long int GL_ShaderSize = 0;
 unsigned long long int MKT_VisualObjectSize = 0;
 unsigned long long int MKT_FontObjectSize = 0;
+unsigned long long int MKT_textObjectSize = 0;
 int init() { // innit it an int init?
     glfwInit();
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
@@ -75,6 +78,7 @@ int init() { // innit it an int init?
     GL_shaderProgram = malloc(1);
     MKT_VisualObject = malloc(1);
     MKT_FontObject = malloc(1);
+    MKT_textObject = malloc(1);
 
 
     GL_createShader(SC_TestVS,SC_TestFS,vertices,indices,20,6);
@@ -83,6 +87,7 @@ int init() { // innit it an int init?
     GL_createImage("./testSource/Pie.png");
     GL_createImage("./testSource/MAKiT.png");
     GL_createFont("./testSource/font2bitmap.png");
+    MKT_createText(0);
     // glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
 
     glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
@@ -193,7 +198,7 @@ int GL_createFont(const char * file)
 {
     
     MKT_FontObjectSize++;
-    MKT_FontObject = realloc(MKT_FontObject,MKT_FontObjectSize*sizeof(textTure));
+    MKT_FontObject = realloc(MKT_FontObject,MKT_FontObjectSize*sizeof(texture));
     for(int i = 0; i < 16; i++)
         MKT_FontObject[MKT_FontObjectSize-1].transform[i] = (i==0|i==5|i==10|i==15 ? 1.0 : 0.0);
     for(int i = 0; i < 4; i++)
@@ -221,8 +226,22 @@ int GL_createFont(const char * file)
 
     stbi_image_free(data);
 
-    MKT_FontObject[MKT_FontObjectSize-1].text = malloc(100);
-    MKT_FontObject[MKT_FontObjectSize-1].sizeOfText = 0;
 
     return 0;
+}
+
+
+int MKT_createText(unsigned int font) {
+    MKT_textObjectSize++;
+    MKT_textObject = realloc(MKT_textObject,MKT_textObjectSize);
+    MKT_textObject[MKT_textObjectSize-1].text = malloc(100);
+    MKT_textObject[MKT_textObjectSize-1].sizeOfText = 0;
+    MKT_textObject[MKT_textObjectSize-1].font = font;
+    for(int i = 0; i < 16; i++)
+        MKT_textObject[MKT_textObjectSize-1].transform[i] = (i==0|i==5|i==10|i==15 ? 1.0 : 0.0);
+    for(int i = 0; i < 4; i++)
+        MKT_textObject[MKT_textObjectSize-1].colour[i] = 1.0;
+
+    
+    MKT_textObject[MKT_textObjectSize-1].transform[12] = -1;
 }
